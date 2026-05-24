@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ØL – Ølympiske Leker 🍺</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #F5C842;
+    --amber: #D4860A;
+    --dark: #1A1208;
+    --foam: #FFF8E7;
+    --brown: #3D2008;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--dark);
+    color: var(--foam);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(245,200,66,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(212,134,10,0.06) 0%, transparent 50%);
+  }
+  header {
+    text-align: center;
+    padding: 2.5rem 1rem 1.5rem;
+    border-bottom: 2px solid rgba(245,200,66,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(245,200,66,0.02) 20px, rgba(245,200,66,0.02) 40px);
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 15vw, 9rem);
+    color: var(--gold);
+    line-height: 0.9;
+    letter-spacing: 4px;
+    text-shadow: 0 0 40px rgba(245,200,66,0.3), 4px 4px 0 var(--brown);
+    position: relative;
+  }
+  .subtitle {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 6px;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-top: 0.3rem;
+  }
+  .sync-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(245,200,66,0.1);
+  }
+  .sync-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #888;
+    transition: background 0.3s;
+  }
+  .sync-dot.connected { background: #4caf50; box-shadow: 0 0 6px #4caf50; }
+  .sync-dot.syncing { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+  .sync-dot.error { background: #e53935; }
+  #syncLabel { color: rgba(255,248,231,0.4); }
+
+  .tabs {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 1rem 0;
+    border-bottom: 2px solid rgba(245,200,66,0.15);
+  }
+  .tab {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0.8rem 2rem;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: rgba(255,248,231,0.4);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover { color: var(--foam); }
+
+  .section { display: none; padding: 2rem 1rem 4rem; max-width: 960px; margin: 0 auto; }
+  .section.active { display: block; }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    color: var(--gold);
+    letter-spacing: 3px;
+    margin-bottom: 1.5rem;
+  }
+  .info-pill {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--amber);
+    border: 1px solid rgba(245,200,66,0.2);
+    padding: 0.3rem 0.7rem;
+    border-radius: 2px;
+    margin-bottom: 1.2rem;
+    display: inline-block;
+  }
+
+  /* OPPSETT */
+  .lag-count-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .lag-count-row label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--amber);
+  }
+  .num-input {
+    background: rgba(255,248,231,0.06);
+    border: 1px solid rgba(245,200,66,0.3);
+    border-radius: 4px;
+    color: var(--gold);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    padding: 0.2rem 0.7rem;
+    width: 70px;
+    outline: none;
+    text-align: center;
+  }
+  .num-input:focus { border-color: var(--gold); }
+  .teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+  .team-input-wrap label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--amber);
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  .team-input {
+    background: rgba(255,248,231,0.06);
+    border: 1px solid rgba(245,200,66,0.2);
+    border-radius: 4px;
+    color: var(--foam);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    padding: 0.4rem 0.7rem;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .team-input:focus { border-color: var(--gold); }
+  .team-input::placeholder { color: rgba(255,248,231,0.25); }
+  .btn-row { display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center; }
+  .btn-gold {
+    background: var(--gold);
+    color: var(--dark);
+    border: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0.8rem 2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .btn-gold:hover { background: #ffd84a; transform: translateY(-1px); }
+  .btn-ghost {
+    background: transparent;
+    color: rgba(255,248,231,0.4);
+    border: 1px solid rgba(255,248,231,0.15);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 0.7rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-ghost:hover { color: var(--foam); border-color: rgba(255,248,231,0.35); }
+
+  /* BRACKET */
+  .cup-intro {
+    background: rgba(245,200,66,0.06);
+    border: 1px solid rgba(245,200,66,0.2);
+    border-radius: 6px;
+    padding: 1rem 1.4rem;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: rgba(255,248,231,0.8);
+  }
+  .cup-intro strong { color: var(--gold); }
+  .bracket-wrapper { overflow-x: auto; padding-bottom: 1rem; }
+  .bracket { display: flex; gap: 0; align-items: stretch; }
+  .round { display: flex; flex-direction: column; flex: 1; min-width: 155px; }
+  .round-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--amber);
+    text-align: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid rgba(245,200,66,0.15);
+    margin-bottom: 1rem;
+  }
+  .round-matches {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    flex: 1;
+    gap: 1rem;
+    padding: 0 0.4rem;
+  }
+  .match {
+    background: rgba(255,248,231,0.04);
+    border: 1px solid rgba(245,200,66,0.15);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .match-activity {
+    font-size: 0.62rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--amber);
+    padding: 0.22rem 0.5rem;
+    background: rgba(245,200,66,0.07);
+    border-bottom: 1px solid rgba(245,200,66,0.1);
+  }
+  .team-slot {
+    padding: 0.45rem 0.55rem;
+    font-size: 0.82rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    cursor: pointer;
+    transition: background 0.15s;
+    display: flex;
+    align-items: center;
+    min-height: 2rem;
+    color: rgba(255,248,231,0.65);
+  }
+  .team-slot:last-child { border-bottom: none; }
+  .team-slot:hover { background: rgba(245,200,66,0.08); color: var(--foam); }
+  .team-slot.winner { color: var(--gold); background: rgba(245,200,66,0.1); font-weight: 700; }
+  .team-slot.winner::before { content: '🏆 '; font-size: 0.75rem; margin-right: 2px; }
+  .finals-row { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+  .final-box { flex: 1; min-width: 200px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(245,200,66,0.25); }
+  .final-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(245,200,66,0.1);
+    padding: 0.4rem 0.7rem;
+    border-bottom: 1px solid rgba(245,200,66,0.15);
+  }
+  .champ-banner {
+    width: 100%;
+    margin-top: 1.5rem;
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--gold);
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(245,200,66,0.4);
+  }
+
+  .loading-overlay {
+    position: fixed; inset: 0;
+    background: var(--dark);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 1rem; z-index: 99;
+    transition: opacity 0.4s;
+  }
+  .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+  .loading-logo { font-family: 'Bebas Neue', sans-serif; font-size: 6rem; color: var(--gold); letter-spacing: 4px; text-shadow: 0 0 40px rgba(245,200,66,0.3); }
+  .loading-text { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase; color: var(--amber); }
+
+  @media (max-width: 500px) {
+    .tab { padding: 0.7rem 1rem; font-size: 0.9rem; }
+    .finals-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-logo">ØL</div>
+  <div class="loading-text">Kobler til...</div>
+</div>
+
+<header>
+  <div class="logo">ØL</div>
+  <div class="subtitle">Ølympiske Leker &nbsp;·&nbsp; Cup-system</div>
+</header>
+
+<div class="sync-bar">
+  <div class="sync-dot" id="syncDot"></div>
+  <span id="syncLabel">Kobler til...</span>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('oppsett',this)">Lag</button>
+  <button class="tab" onclick="showTab('bracket',this)">Cup</button>
+</div>
+
+<!-- OPPSETT -->
+<div class="section active" id="oppsett">
+  <div class="section-title">Lag</div>
+  <div class="info-pill">🔥 Synkroniseres live på alle enheter</div>
+  <div class="lag-count-row">
+    <label>Antall lag:</label>
+    <input type="number" class="num-input" id="lagCount" min="5" max="16" value="8" onchange="buildTeamInputs()">
+    <span style="font-family:'Barlow Condensed';font-size:0.85rem;color:rgba(255,248,231,0.4);letter-spacing:1px;">MIN 5 · MAX 16</span>
+  </div>
+  <div class="teams-grid" id="teamsGrid"></div>
+  <div class="btn-row">
+    <button class="btn-gold" onclick="applyTeams()">Lagre og bygg cup →</button>
+    <button class="btn-ghost" onclick="confirmReset()">↺ Nullstill alt</button>
+  </div>
+</div>
+
+<!-- BRACKET -->
+<div class="section" id="bracket">
+  <div class="section-title">Cup</div>
+  <div class="cup-intro">
+    Klikk på et lag for å markere <strong>vinneren</strong> – alle enheter oppdateres live. Lag uten motstander (<strong>BYE</strong>) rykker rett videre.
+  </div>
+  <div class="bracket-wrapper">
+    <div class="bracket" id="bracketContainer"></div>
+  </div>
+  <div class="finals-row" id="finalsRow"></div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBs9yaE35pEk4nCpA7IiHd2rzwDjuzBREE",
+    authDomain: "olympiske-leker.firebaseapp.com",
+    projectId: "olympiske-leker",
+    storageBucket: "olympiske-leker.firebasestorage.app",
+    messagingSenderId: "732428319841",
+    appId: "1:732428319841:web:6c6f7a24d6941b6863fe20",
+    databaseURL: "https://olympiske-leker-default-rtdb.europe-west1.firebasedatabase.app/"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const ROOT = ref(db, 'ol_cup');
+
+  let teams = [], scores = {}, matchWinners = {}, matchTeams = {}, matchActivities = {};
+  let numRounds = 0, totalSlots = 0;
+  let ignoreNextRemote = false;
+
+  const ACTIVITIES = [
+    'Stein Saks Papir','Ølstafett','Nynne-quiz','Tautrekking',
+    'Frys!','Menneskekjede','Flaskekast','Pyramide-sprint','Simon sier','Hviskeleken'
+  ];
+
+  // SYNC STATUS
+  function setSyncStatus(status, label) {
+    document.getElementById('syncDot').className = 'sync-dot ' + status;
+    document.getElementById('syncLabel').textContent = label;
+  }
+
+  function saveToFirebase() {
+    ignoreNextRemote = true;
+    setSyncStatus('syncing', 'Lagrer...');
+    set(ROOT, { teams, scores, matchWinners, matchTeams, matchActivities, numRounds, totalSlots })
+      .then(() => setSyncStatus('connected', 'Synkronisert ✓'))
+      .catch(() => setSyncStatus('error', 'Feil ved lagring'));
+  }
+
+  onValue(ROOT, (snapshot) => {
+    if (ignoreNextRemote) { ignoreNextRemote = false; return; }
+    const data = snapshot.val();
+    if (!data || !data.teams || data.teams.length === 0) {
+      initDefaults(); hideLoader(); setSyncStatus('connected', 'Tilkoblet'); return;
+    }
+    teams           = data.teams           || [];
+    scores          = data.scores          || {};
+    matchWinners    = data.matchWinners    || {};
+    matchTeams      = data.matchTeams      || {};
+    matchActivities = data.matchActivities || {};
+    numRounds       = data.numRounds       || 0;
+    totalSlots      = data.totalSlots      || 0;
+    document.getElementById('lagCount').value = teams.length;
+    buildTeamInputs();
+    if (numRounds > 0) buildBracket();
+    hideLoader();
+    setSyncStatus('connected', 'Tilkoblet · Live');
+  }, () => { setSyncStatus('error', 'Tilkoblingsfeil'); hideLoader(); });
+
+  function hideLoader() {
+    const ol = document.getElementById('loadingOverlay');
+    ol.classList.add('hidden');
+    setTimeout(() => ol.remove(), 500);
+  }
+
+  function initDefaults() {
+    teams = Array.from({length:8},(_,i)=>'Lag '+(i+1));
+    scores = {}; teams.forEach(t => scores[t] = 0);
+    computeBracketStructure();
+    buildTeamInputs(); buildBracket();
+  }
+
+  // TABS
+  window.showTab = (id, el) => {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+  };
+
+  // RESET
+  window.confirmReset = () => {
+    if (confirm('Nullstille alt? Slettes for alle enheter.')) {
+      teams=[]; scores={}; matchWinners={}; matchTeams={}; matchActivities={}; numRounds=0; totalSlots=0;
+      set(ROOT, null).then(() => { initDefaults(); saveToFirebase(); });
+    }
+  };
+
+  // TEAM INPUTS
+  window.buildTeamInputs = () => {
+    const n = Math.min(Math.max(parseInt(document.getElementById('lagCount').value)||8, 5), 16);
+    document.getElementById('lagCount').value = n;
+    const grid = document.getElementById('teamsGrid');
+    grid.innerHTML = '';
+    for (let i = 0; i < n; i++) {
+      const wrap = document.createElement('div');
+      wrap.className = 'team-input-wrap';
+      wrap.innerHTML = `<label>Lag ${i+1}</label><input class="team-input" id="ti${i}" placeholder="Lagnavn" value="${teams[i] ? esc(teams[i]) : 'Lag '+(i+1)}">`;
+      grid.appendChild(wrap);
+    }
+  };
+
+  window.applyTeams = () => {
+    const n = Math.min(Math.max(parseInt(document.getElementById('lagCount').value)||8, 5), 16);
+    teams = [];
+    for (let i = 0; i < n; i++) {
+      const el = document.getElementById('ti'+i);
+      teams.push(el ? (el.value.trim() || 'Lag '+(i+1)) : 'Lag '+(i+1));
+    }
+    scores={}; teams.forEach(t => scores[t]=0);
+    matchWinners={}; matchTeams={}; matchActivities={};
+    computeBracketStructure(); buildBracket(); saveToFirebase();
+  };
+
+  // BRACKET STRUCTURE
+  function computeBracketStructure() {
+    let slots = 1;
+    while (slots < teams.length) slots *= 2;
+    totalSlots = slots;
+    numRounds = Math.log2(slots);
+  }
+
+  function matchIdForRound(round, idx) {
+    let start = 0, count = totalSlots / 2;
+    for (let r = 0; r < round; r++) { start += count; count = Math.floor(count/2); }
+    return start + idx;
+  }
+
+  function matchesInRound(round) {
+    let count = totalSlots / 2;
+    for (let r = 0; r < round; r++) count = Math.floor(count/2);
+    return count;
+  }
+
+  function getTeamForSlot(i) { return i < teams.length ? teams[i] : 'BYE'; }
+  function isBye(n) { return n === 'BYE'; }
+
+  function getOrSetActivity(key) {
+    const k = 'm' + key;
+    if (!matchActivities[k]) matchActivities[k] = ACTIVITIES[Math.floor(Math.random()*ACTIVITIES.length)];
+    return matchActivities[k];
+  }
+
+  // BUILD BRACKET
+  function buildBracket() {
+    const container = document.getElementById('bracketContainer');
+    container.innerHTML = '';
+    for (let r = 0; r < numRounds - 1; r++) {
+      const count = matchesInRound(r);
+      const roundEl = document.createElement('div');
+      roundEl.className = 'round';
+      const rLabel = r === 0 ? (numRounds === 3 ? 'Kvartfinale' : 'Runde 1')
+                   : r === numRounds - 2 ? 'Semifinale' : 'Runde '+(r+1);
+      roundEl.innerHTML = `<div class="round-title">${rLabel}</div>`;
+      const matchesEl = document.createElement('div');
+      matchesEl.className = 'round-matches';
+      for (let i = 0; i < count; i++) {
+        const mId = matchIdForRound(r, i);
+        let a, b;
+        if (r === 0) {
+          a = getTeamForSlot(i*2); b = getTeamForSlot(i*2+1);
+          matchTeams['m'+mId] = [a, b];
+          if (isBye(b) && !matchWinners['m'+mId]) matchWinners['m'+mId] = a;
+          if (isBye(a) && !matchWinners['m'+mId]) matchWinners['m'+mId] = b;
+        } else {
+          const p1 = matchIdForRound(r-1, i*2), p2 = matchIdForRound(r-1, i*2+1);
+          a = matchWinners['m'+p1] || ('— W'+(p1+1));
+          b = matchWinners['m'+p2] || ('— W'+(p2+1));
+          matchTeams['m'+mId] = [a, b];
+          if (isBye(b) && !isBye(a) && !matchWinners['m'+mId]) matchWinners['m'+mId] = a;
+          if (isBye(a) && !isBye(b) && !matchWinners['m'+mId]) matchWinners['m'+mId] = b;
+        }
+        matchesEl.appendChild(createMatchEl(mId, matchTeams['m'+mId][0], matchTeams['m'+mId][1]));
+      }
+      roundEl.appendChild(matchesEl);
+      container.appendChild(roundEl);
+    }
+    buildFinalsRow();
+  }
+
+  function createMatchEl(matchId, a, b) {
+    const bye = isBye(a) || isBye(b);
+    const div = document.createElement('div');
+    div.className = 'match';
+    div.id = 'match-' + matchId;
+    if (bye) div.style.opacity = '0.45';
+    const act = getOrSetActivity(matchId);
+    const w = matchWinners['m'+matchId];
+    div.innerHTML = `
+      <div class="match-activity">🎯 ${act}${bye ? ' · BYE' : ''}</div>
+      <div class="team-slot${w===a?' winner':''}" onclick="window._sw(${matchId},'${esc(a)}',this)">${a}</div>
+      <div class="team-slot${w===b?' winner':''}" onclick="window._sw(${matchId},'${esc(b)}',this)">${b}</div>
+    `;
+    return div;
+  }
+
+  function esc(s) { return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+
+  window._sw = (matchId, team, el) => {
+    if (isBye(team)) return;
+    matchWinners['m'+matchId] = team;
+    const me = document.getElementById('match-'+matchId);
+    if (me) me.querySelectorAll('.team-slot').forEach(s => s.classList.remove('winner'));
+    if (el) el.classList.add('winner');
+    propagate(matchId);
+    saveToFirebase();
+  };
+
+  function propagate(matchId) {
+    let round = 0, acc = 0;
+    for (let r = 0; r < numRounds; r++) {
+      const cnt = matchesInRound(r);
+      if (matchId < acc + cnt) { round = r; break; }
+      acc += cnt;
+    }
+    const idx = matchId - acc;
+    const nr = round + 1;
+    if (nr >= numRounds) { buildFinalsRow(); return; }
+    const ni = Math.floor(idx/2);
+    const nMId = matchIdForRound(nr, ni);
+    if (nr === numRounds - 1) { buildFinalsRow(); return; }
+    const p1 = matchIdForRound(nr-1, ni*2), p2 = matchIdForRound(nr-1, ni*2+1);
+    const newA = matchWinners['m'+p1] || ('— W'+(p1+1));
+    const newB = matchWinners['m'+p2] || ('— W'+(p2+1));
+    matchTeams['m'+nMId] = [newA, newB];
+    delete matchWinners['m'+nMId];
+    const old = document.getElementById('match-'+nMId);
+    if (old) {
+      const nel = createMatchEl(nMId, newA, newB);
+      old.replaceWith(nel);
+      if (isBye(newB) && !isBye(newA)) window._sw(nMId, newA, null);
+      if (isBye(newA) && !isBye(newB)) window._sw(nMId, newB, null);
+    }
+  }
+
+  function getLoser(matchId) {
+    const w = matchWinners['m'+matchId];
+    return (matchTeams['m'+matchId]||[]).find(x => x !== w) || null;
+  }
+
+  function buildFinalsRow() {
+    const row = document.getElementById('finalsRow');
+    row.innerHTML = '';
+    const sfRound = numRounds - 2;
+    const sf0 = matchIdForRound(sfRound, 0), sf1 = matchIdForRound(sfRound, 1);
+    const sfW0 = matchWinners['m'+sf0] || '— Vinner SF1';
+    const sfW1 = matchWinners['m'+sf1] || '— Vinner SF2';
+    const sfL0 = getLoser(sf0) || '— Taper SF1';
+    const sfL1 = getLoser(sf1) || '— Taper SF2';
+    const fMId = matchIdForRound(numRounds-1, 0);
+    matchTeams['m'+fMId] = [sfW0, sfW1];
+    matchTeams['m9000'] = [sfL0, sfL1];
+
+    const tw = matchWinners['m9000'];
+    const ta = getOrSetActivity('9000');
+    const tb = document.createElement('div');
+    tb.className = 'final-box';
+    tb.innerHTML = `
+      <div class="final-title">🥉 Bronse-kamp</div>
+      <div class="match-activity">🎯 ${ta}</div>
+      <div class="team-slot${tw===sfL0?' winner':''}" onclick="window._sw('9000','${esc(sfL0)}',this)">${sfL0}</div>
+      <div class="team-slot${tw===sfL1?' winner':''}" onclick="window._sw('9000','${esc(sfL1)}',this)">${sfL1}</div>
+    `;
+    row.appendChild(tb);
+
+    const fw = matchWinners['m'+fMId];
+    const fa = getOrSetActivity(fMId);
+    const fb = document.createElement('div');
+    fb.className = 'final-box';
+    fb.style.borderColor = 'rgba(245,200,66,0.55)';
+    fb.innerHTML = `
+      <div class="final-title" style="background:rgba(245,200,66,0.18);font-size:0.9rem;letter-spacing:3px;">🏆 FINALE</div>
+      <div class="match-activity" style="background:rgba(245,200,66,0.07)">🎯 ${fa}</div>
+      <div class="team-slot${fw===sfW0?' winner':''}" onclick="window._sw(${fMId},'${esc(sfW0)}',this)">${sfW0}</div>
+      <div class="team-slot${fw===sfW1?' winner':''}" onclick="window._sw(${fMId},'${esc(sfW1)}',this)">${sfW1}</div>
+    `;
+    row.appendChild(fb);
+
+    if (fw && !isBye(fw)) {
+      const banner = document.createElement('div');
+      banner.className = 'champ-banner';
+      banner.textContent = '🏆 ' + fw + ' – Ølympiske Mestere!';
+      row.appendChild(banner);
+    }
+  }
+</script>
+</body>
+</html>
