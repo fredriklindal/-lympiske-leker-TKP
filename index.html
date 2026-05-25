@@ -64,16 +64,78 @@
     text-transform: uppercase;
     border-bottom: 1px solid rgba(245,200,66,0.1);
   }
-  .sync-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: #888;
-    transition: background 0.3s;
-  }
+  .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #888; transition: background 0.3s; }
   .sync-dot.connected { background: #4caf50; box-shadow: 0 0 6px #4caf50; }
   .sync-dot.syncing { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
   .sync-dot.error { background: #e53935; }
   #syncLabel { color: rgba(255,248,231,0.4); }
+
+  /* AUTH BAR */
+  .auth-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 0.6rem 1rem;
+    background: rgba(245,200,66,0.04);
+    border-bottom: 1px solid rgba(245,200,66,0.1);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    flex-wrap: wrap;
+  }
+  .auth-status {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: rgba(255,248,231,0.5);
+    text-transform: uppercase;
+  }
+  .auth-status.unlocked { color: #4caf50; }
+  .auth-input {
+    background: rgba(255,248,231,0.06);
+    border: 1px solid rgba(245,200,66,0.2);
+    border-radius: 4px;
+    color: var(--foam);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.3rem 0.7rem;
+    outline: none;
+    width: 140px;
+    transition: border-color 0.2s;
+  }
+  .auth-input:focus { border-color: var(--gold); }
+  .auth-input::placeholder { color: rgba(255,248,231,0.2); }
+  .auth-btn {
+    background: var(--gold);
+    color: var(--dark);
+    border: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 0.35rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .auth-btn:hover { background: #ffd84a; }
+  .auth-btn.logout {
+    background: transparent;
+    color: rgba(255,248,231,0.35);
+    border: 1px solid rgba(255,248,231,0.15);
+    font-size: 0.75rem;
+  }
+  .auth-btn.logout:hover { color: var(--foam); border-color: rgba(255,248,231,0.35); background: transparent; }
+  .auth-error {
+    color: #e53935;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: none;
+  }
+  .auth-error.show { display: block; }
 
   .tabs {
     display: flex;
@@ -101,215 +163,61 @@
 
   .section { display: none; padding: 2rem 1rem 4rem; max-width: 960px; margin: 0 auto; }
   .section.active { display: block; }
-  .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.8rem;
-    color: var(--gold);
-    letter-spacing: 3px;
-    margin-bottom: 1.5rem;
-  }
-  .info-pill {
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; color: var(--gold); letter-spacing: 3px; margin-bottom: 1.5rem; }
+  .info-pill { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; color: var(--amber); border: 1px solid rgba(245,200,66,0.2); padding: 0.3rem 0.7rem; border-radius: 2px; margin-bottom: 1.2rem; display: inline-block; }
+
+  /* LOCKED OVERLAY */
+  .locked-msg {
+    display: none;
+    text-align: center;
+    padding: 3rem 1rem;
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--amber);
-    border: 1px solid rgba(245,200,66,0.2);
-    padding: 0.3rem 0.7rem;
-    border-radius: 2px;
-    margin-bottom: 1.2rem;
-    display: inline-block;
   }
+  .locked-msg .lock-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .locked-msg h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); letter-spacing: 3px; margin-bottom: 0.5rem; }
+  .locked-msg p { color: rgba(255,248,231,0.5); font-size: 0.95rem; letter-spacing: 0.5px; }
 
   /* OPPSETT */
-  .lag-count-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
-  .lag-count-row label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.85rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--amber);
-  }
-  .num-input {
-    background: rgba(255,248,231,0.06);
-    border: 1px solid rgba(245,200,66,0.3);
-    border-radius: 4px;
-    color: var(--gold);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.6rem;
-    letter-spacing: 2px;
-    padding: 0.2rem 0.7rem;
-    width: 70px;
-    outline: none;
-    text-align: center;
-  }
+  .lag-count-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .lag-count-row label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--amber); }
+  .num-input { background: rgba(255,248,231,0.06); border: 1px solid rgba(245,200,66,0.3); border-radius: 4px; color: var(--gold); font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; padding: 0.2rem 0.7rem; width: 70px; outline: none; text-align: center; }
   .num-input:focus { border-color: var(--gold); }
-  .teams-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0.8rem;
-    margin-bottom: 1.5rem;
-  }
-  .team-input-wrap label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.75rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--amber);
-    display: block;
-    margin-bottom: 0.3rem;
-  }
-  .team-input {
-    background: rgba(255,248,231,0.06);
-    border: 1px solid rgba(245,200,66,0.2);
-    border-radius: 4px;
-    color: var(--foam);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1rem;
-    padding: 0.4rem 0.7rem;
-    width: 100%;
-    outline: none;
-    transition: border-color 0.2s;
-  }
+  .teams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.8rem; margin-bottom: 1.5rem; }
+  .team-input-wrap label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--amber); display: block; margin-bottom: 0.3rem; }
+  .team-input { background: rgba(255,248,231,0.06); border: 1px solid rgba(245,200,66,0.2); border-radius: 4px; color: var(--foam); font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; padding: 0.4rem 0.7rem; width: 100%; outline: none; transition: border-color 0.2s; }
   .team-input:focus { border-color: var(--gold); }
   .team-input::placeholder { color: rgba(255,248,231,0.25); }
+  .team-input:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-row { display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center; }
-  .btn-gold {
-    background: var(--gold);
-    color: var(--dark);
-    border: none;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 0.8rem 2rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.15s, transform 0.15s;
-  }
+  .btn-gold { background: var(--gold); color: var(--dark); border: none; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.8rem 2rem; border-radius: 4px; cursor: pointer; transition: background 0.15s, transform 0.15s; }
   .btn-gold:hover { background: #ffd84a; transform: translateY(-1px); }
-  .btn-ghost {
-    background: transparent;
-    color: rgba(255,248,231,0.4);
-    border: 1px solid rgba(255,248,231,0.15);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 0.7rem 1.2rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
+  .btn-gold:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+  .btn-ghost { background: transparent; color: rgba(255,248,231,0.4); border: 1px solid rgba(255,248,231,0.15); font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 0.7rem 1.2rem; border-radius: 4px; cursor: pointer; transition: all 0.15s; }
   .btn-ghost:hover { color: var(--foam); border-color: rgba(255,248,231,0.35); }
+  .btn-ghost:disabled { opacity: 0.35; cursor: not-allowed; }
 
   /* BRACKET */
-  .cup-intro {
-    background: rgba(245,200,66,0.06);
-    border: 1px solid rgba(245,200,66,0.2);
-    border-radius: 6px;
-    padding: 1rem 1.4rem;
-    margin-bottom: 2rem;
-    font-size: 0.9rem;
-    line-height: 1.7;
-    color: rgba(255,248,231,0.8);
-  }
+  .cup-intro { background: rgba(245,200,66,0.06); border: 1px solid rgba(245,200,66,0.2); border-radius: 6px; padding: 1rem 1.4rem; margin-bottom: 2rem; font-size: 0.9rem; line-height: 1.7; color: rgba(255,248,231,0.8); }
   .cup-intro strong { color: var(--gold); }
   .bracket-wrapper { overflow-x: auto; padding-bottom: 1rem; }
   .bracket { display: flex; gap: 0; align-items: stretch; }
   .round { display: flex; flex-direction: column; flex: 1; min-width: 155px; }
-  .round-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--amber);
-    text-align: center;
-    padding: 0.5rem;
-    border-bottom: 1px solid rgba(245,200,66,0.15);
-    margin-bottom: 1rem;
-  }
-  .round-matches {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    flex: 1;
-    gap: 1rem;
-    padding: 0 0.4rem;
-  }
-  .match {
-    background: rgba(255,248,231,0.04);
-    border: 1px solid rgba(245,200,66,0.15);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .match-activity {
-    font-size: 0.62rem;
-    font-family: 'Barlow Condensed', sans-serif;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    color: var(--amber);
-    padding: 0.22rem 0.5rem;
-    background: rgba(245,200,66,0.07);
-    border-bottom: 1px solid rgba(245,200,66,0.1);
-  }
-  .team-slot {
-    padding: 0.45rem 0.55rem;
-    font-size: 0.82rem;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 600;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    cursor: pointer;
-    transition: background 0.15s;
-    display: flex;
-    align-items: center;
-    min-height: 2rem;
-    color: rgba(255,248,231,0.65);
-  }
+  .round-title { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--amber); text-align: center; padding: 0.5rem; border-bottom: 1px solid rgba(245,200,66,0.15); margin-bottom: 1rem; }
+  .round-matches { display: flex; flex-direction: column; justify-content: space-around; flex: 1; gap: 1rem; padding: 0 0.4rem; }
+  .match { background: rgba(255,248,231,0.04); border: 1px solid rgba(245,200,66,0.15); border-radius: 4px; overflow: hidden; }
+  .match-activity { font-size: 0.62rem; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.8px; text-transform: uppercase; color: var(--amber); padding: 0.22rem 0.5rem; background: rgba(245,200,66,0.07); border-bottom: 1px solid rgba(245,200,66,0.1); }
+  .team-slot { padding: 0.45rem 0.55rem; font-size: 0.82rem; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; display: flex; align-items: center; min-height: 2rem; color: rgba(255,248,231,0.65); }
   .team-slot:last-child { border-bottom: none; }
-  .team-slot:hover { background: rgba(245,200,66,0.08); color: var(--foam); }
+  .team-slot.clickable { cursor: pointer; }
+  .team-slot.clickable:hover { background: rgba(245,200,66,0.08); color: var(--foam); }
   .team-slot.winner { color: var(--gold); background: rgba(245,200,66,0.1); font-weight: 700; }
   .team-slot.winner::before { content: '🏆 '; font-size: 0.75rem; margin-right: 2px; }
   .finals-row { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
   .final-box { flex: 1; min-width: 200px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(245,200,66,0.25); }
-  .final-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--gold);
-    background: rgba(245,200,66,0.1);
-    padding: 0.4rem 0.7rem;
-    border-bottom: 1px solid rgba(245,200,66,0.15);
-  }
-  .champ-banner {
-    width: 100%;
-    margin-top: 1.5rem;
-    text-align: center;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem;
-    color: var(--gold);
-    letter-spacing: 4px;
-    text-shadow: 0 0 20px rgba(245,200,66,0.4);
-  }
+  .final-title { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); background: rgba(245,200,66,0.1); padding: 0.4rem 0.7rem; border-bottom: 1px solid rgba(245,200,66,0.15); }
+  .champ-banner { width: 100%; margin-top: 1.5rem; text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); letter-spacing: 4px; text-shadow: 0 0 20px rgba(245,200,66,0.4); }
 
-  .loading-overlay {
-    position: fixed; inset: 0;
-    background: var(--dark);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 1rem; z-index: 99;
-    transition: opacity 0.4s;
-  }
+  .loading-overlay { position: fixed; inset: 0; background: var(--dark); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; z-index: 99; transition: opacity 0.4s; }
   .loading-overlay.hidden { opacity: 0; pointer-events: none; }
   .loading-logo { font-family: 'Bebas Neue', sans-serif; font-size: 6rem; color: var(--gold); letter-spacing: 4px; text-shadow: 0 0 40px rgba(245,200,66,0.3); }
   .loading-text { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase; color: var(--amber); }
@@ -317,6 +225,7 @@
   @media (max-width: 500px) {
     .tab { padding: 0.7rem 1rem; font-size: 0.9rem; }
     .finals-row { flex-direction: column; }
+    .auth-bar { gap: 0.5rem; }
   }
 </style>
 </head>
@@ -337,32 +246,51 @@
   <span id="syncLabel">Kobler til...</span>
 </div>
 
+<div class="auth-bar">
+  <div class="auth-status" id="authStatus">🔒 Tilskuer-modus</div>
+  <div id="authForm" style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+    <input class="auth-input" type="password" id="pwInput" placeholder="Passord" onkeydown="if(event.key==='Enter')tryLogin()">
+    <button class="auth-btn" onclick="tryLogin()">Lås opp</button>
+    <span class="auth-error" id="authError">Feil passord</span>
+  </div>
+  <button class="auth-btn logout" id="logoutBtn" style="display:none" onclick="logout()">Lås 🔒</button>
+</div>
+
 <div class="tabs">
   <button class="tab active" onclick="showTab('oppsett',this)">Lag</button>
   <button class="tab" onclick="showTab('bracket',this)">Cup</button>
 </div>
 
-<!-- OPPSETT -->
+<!-- LAG -->
 <div class="section active" id="oppsett">
   <div class="section-title">Lag</div>
   <div class="info-pill">🔥 Synkroniseres live på alle enheter</div>
-  <div class="lag-count-row">
-    <label>Antall lag:</label>
-    <input type="number" class="num-input" id="lagCount" min="5" max="16" value="8" onchange="buildTeamInputs()">
-    <span style="font-family:'Barlow Condensed';font-size:0.85rem;color:rgba(255,248,231,0.4);letter-spacing:1px;">MIN 5 · MAX 16</span>
+
+  <div id="lagEditArea">
+    <div class="lag-count-row">
+      <label>Antall lag:</label>
+      <input type="number" class="num-input" id="lagCount" min="5" max="16" value="8" onchange="buildTeamInputs()">
+      <span style="font-family:'Barlow Condensed';font-size:0.85rem;color:rgba(255,248,231,0.4);letter-spacing:1px;">MIN 5 · MAX 16</span>
+    </div>
+    <div class="teams-grid" id="teamsGrid"></div>
+    <div class="btn-row">
+      <button class="btn-gold" id="applyBtn" onclick="applyTeams()">Lagre og bygg cup →</button>
+      <button class="btn-ghost" id="resetBtn" onclick="confirmReset()">↺ Nullstill alt</button>
+    </div>
   </div>
-  <div class="teams-grid" id="teamsGrid"></div>
-  <div class="btn-row">
-    <button class="btn-gold" onclick="applyTeams()">Lagre og bygg cup →</button>
-    <button class="btn-ghost" onclick="confirmReset()">↺ Nullstill alt</button>
+
+  <div class="locked-msg" id="lagLocked">
+    <div class="lock-icon">🔒</div>
+    <h2>Kun tilskuer</h2>
+    <p>Logg inn med passord øverst for å redigere lag.</p>
   </div>
 </div>
 
-<!-- BRACKET -->
+<!-- CUP -->
 <div class="section" id="bracket">
   <div class="section-title">Cup</div>
-  <div class="cup-intro">
-    Klikk på et lag for å markere <strong>vinneren</strong> – alle enheter oppdateres live. Lag uten motstander (<strong>BYE</strong>) rykker rett videre.
+  <div class="cup-intro" id="cupIntro">
+    <strong>Tilskuer-modus</strong> – logg inn øverst for å klikke vinnere.
   </div>
   <div class="bracket-wrapper">
     <div class="bracket" id="bracketContainer"></div>
@@ -384,6 +312,13 @@
     databaseURL: "https://olympiske-leker-default-rtdb.europe-west1.firebasedatabase.app/"
   };
 
+  const CORRECT_HASH = "23504ef356a5aa058d16ee1a05ccb9f2e670310e129ef67b6ad1555fee7cf230";
+
+  async function checkPassword(pw) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(pw));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('') === CORRECT_HASH;
+  }
+
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const ROOT = ref(db, 'ol_cup');
@@ -391,13 +326,62 @@
   let teams = [], scores = {}, matchWinners = {}, matchTeams = {}, matchActivities = {};
   let numRounds = 0, totalSlots = 0;
   let ignoreNextRemote = false;
+  let isUnlocked = false;
 
   const ACTIVITIES = [
     'Stein Saks Papir','Ølstafett','Nynne-quiz','Tautrekking',
     'Frys!','Menneskekjede','Flaskekast','Pyramide-sprint','Simon sier','Hviskeleken'
   ];
 
-  // SYNC STATUS
+  // ===== AUTH =====
+  window.tryLogin = async () => {
+    const val = document.getElementById('pwInput').value;
+    if (await checkPassword(val)) {
+      isUnlocked = true;
+      document.getElementById('authError').classList.remove('show');
+      document.getElementById('pwInput').value = '';
+      updateAuthUI();
+    } else {
+      document.getElementById('authError').classList.add('show');
+      document.getElementById('pwInput').value = '';
+    }
+  };
+
+  window.logout = () => {
+    isUnlocked = false;
+    updateAuthUI();
+  };
+
+  function updateAuthUI() {
+    const status = document.getElementById('authStatus');
+    const form = document.getElementById('authForm');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const lagEditArea = document.getElementById('lagEditArea');
+    const lagLocked = document.getElementById('lagLocked');
+    const cupIntro = document.getElementById('cupIntro');
+
+    if (isUnlocked) {
+      status.textContent = '🟢 Admin-modus';
+      status.className = 'auth-status unlocked';
+      form.style.display = 'none';
+      logoutBtn.style.display = 'inline-block';
+      lagEditArea.style.display = 'block';
+      lagLocked.style.display = 'none';
+      cupIntro.innerHTML = 'Klikk på et lag for å markere <strong>vinneren</strong> – alle enheter oppdateres live. Lag uten motstander (<strong>BYE</strong>) rykker rett videre.';
+    } else {
+      status.textContent = '🔒 Tilskuer-modus';
+      status.className = 'auth-status';
+      form.style.display = 'flex';
+      logoutBtn.style.display = 'none';
+      lagEditArea.style.display = 'none';
+      lagLocked.style.display = 'block';
+      cupIntro.innerHTML = '<strong>Tilskuer-modus</strong> – logg inn øverst for å klikke vinnere.';
+    }
+    // Rebuild bracket to toggle clickability
+    if (numRounds > 0) buildBracket();
+  }
+
+  // ===== SYNC =====
   function setSyncStatus(status, label) {
     document.getElementById('syncDot').className = 'sync-dot ' + status;
     document.getElementById('syncLabel').textContent = label;
@@ -444,7 +428,7 @@
     buildTeamInputs(); buildBracket();
   }
 
-  // TABS
+  // ===== TABS =====
   window.showTab = (id, el) => {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -452,15 +436,16 @@
     el.classList.add('active');
   };
 
-  // RESET
+  // ===== RESET =====
   window.confirmReset = () => {
+    if (!isUnlocked) return;
     if (confirm('Nullstille alt? Slettes for alle enheter.')) {
       teams=[]; scores={}; matchWinners={}; matchTeams={}; matchActivities={}; numRounds=0; totalSlots=0;
       set(ROOT, null).then(() => { initDefaults(); saveToFirebase(); });
     }
   };
 
-  // TEAM INPUTS
+  // ===== TEAM INPUTS =====
   window.buildTeamInputs = () => {
     const n = Math.min(Math.max(parseInt(document.getElementById('lagCount').value)||8, 5), 16);
     document.getElementById('lagCount').value = n;
@@ -469,12 +454,13 @@
     for (let i = 0; i < n; i++) {
       const wrap = document.createElement('div');
       wrap.className = 'team-input-wrap';
-      wrap.innerHTML = `<label>Lag ${i+1}</label><input class="team-input" id="ti${i}" placeholder="Lagnavn" value="${teams[i] ? esc(teams[i]) : 'Lag '+(i+1)}">`;
+      wrap.innerHTML = `<label>Lag ${i+1}</label><input class="team-input" id="ti${i}" placeholder="Lagnavn" value="${teams[i] ? esc(teams[i]) : 'Lag '+(i+1)}" ${isUnlocked ? '' : 'disabled'}>`;
       grid.appendChild(wrap);
     }
   };
 
   window.applyTeams = () => {
+    if (!isUnlocked) return;
     const n = Math.min(Math.max(parseInt(document.getElementById('lagCount').value)||8, 5), 16);
     teams = [];
     for (let i = 0; i < n; i++) {
@@ -486,7 +472,7 @@
     computeBracketStructure(); buildBracket(); saveToFirebase();
   };
 
-  // BRACKET STRUCTURE
+  // ===== BRACKET STRUCTURE =====
   function computeBracketStructure() {
     let slots = 1;
     while (slots < teams.length) slots *= 2;
@@ -515,7 +501,7 @@
     return matchActivities[k];
   }
 
-  // BUILD BRACKET
+  // ===== BUILD BRACKET =====
   function buildBracket() {
     const container = document.getElementById('bracketContainer');
     container.innerHTML = '';
@@ -560,10 +546,11 @@
     if (bye) div.style.opacity = '0.45';
     const act = getOrSetActivity(matchId);
     const w = matchWinners['m'+matchId];
+    const clickable = isUnlocked && !bye;
     div.innerHTML = `
       <div class="match-activity">🎯 ${act}${bye ? ' · BYE' : ''}</div>
-      <div class="team-slot${w===a?' winner':''}" onclick="window._sw(${matchId},'${esc(a)}',this)">${a}</div>
-      <div class="team-slot${w===b?' winner':''}" onclick="window._sw(${matchId},'${esc(b)}',this)">${b}</div>
+      <div class="team-slot${w===a?' winner':''}${clickable?' clickable':''}" ${clickable?`onclick="window._sw(${matchId},'${esc(a)}',this)"`:''} >${a}</div>
+      <div class="team-slot${w===b?' winner':''}${clickable?' clickable':''}" ${clickable?`onclick="window._sw(${matchId},'${esc(b)}',this)"`:''} >${b}</div>
     `;
     return div;
   }
@@ -571,7 +558,7 @@
   function esc(s) { return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 
   window._sw = (matchId, team, el) => {
-    if (isBye(team)) return;
+    if (!isUnlocked || isBye(team)) return;
     matchWinners['m'+matchId] = team;
     const me = document.getElementById('match-'+matchId);
     if (me) me.querySelectorAll('.team-slot').forEach(s => s.classList.remove('winner'));
@@ -627,13 +614,14 @@
 
     const tw = matchWinners['m9000'];
     const ta = getOrSetActivity('9000');
+    const clickable = isUnlocked;
     const tb = document.createElement('div');
     tb.className = 'final-box';
     tb.innerHTML = `
       <div class="final-title">🥉 Bronse-kamp</div>
       <div class="match-activity">🎯 ${ta}</div>
-      <div class="team-slot${tw===sfL0?' winner':''}" onclick="window._sw('9000','${esc(sfL0)}',this)">${sfL0}</div>
-      <div class="team-slot${tw===sfL1?' winner':''}" onclick="window._sw('9000','${esc(sfL1)}',this)">${sfL1}</div>
+      <div class="team-slot${tw===sfL0?' winner':''}${clickable?' clickable':''}" ${clickable?`onclick="window._sw('9000','${esc(sfL0)}',this)"`:''} >${sfL0}</div>
+      <div class="team-slot${tw===sfL1?' winner':''}${clickable?' clickable':''}" ${clickable?`onclick="window._sw('9000','${esc(sfL1)}',this)"`:''} >${sfL1}</div>
     `;
     row.appendChild(tb);
 
@@ -645,8 +633,8 @@
     fb.innerHTML = `
       <div class="final-title" style="background:rgba(245,200,66,0.18);font-size:0.9rem;letter-spacing:3px;">🏆 FINALE</div>
       <div class="match-activity" style="background:rgba(245,200,66,0.07)">🎯 ${fa}</div>
-      <div class="team-slot${fw===sfW0?' winner':''}" onclick="window._sw(${fMId},'${esc(sfW0)}',this)">${sfW0}</div>
-      <div class="team-slot${fw===sfW1?' winner':''}" onclick="window._sw(${fMId},'${esc(sfW1)}',this)">${sfW1}</div>
+      <div class="team-slot${fw===sfW0?' winner':''}${clickable?' clickable':''}" ${clickable?`onclick="window._sw(${fMId},'${esc(sfW0)}',this)"`:''} >${sfW0}</div>
+      <div class="team-slot${fw===sfW1?' winner':''}${clickable?' clickable':''}" ${clickable?`onclick="window._sw(${fMId},'${esc(sfW1)}',this)"`:''} >${sfW1}</div>
     `;
     row.appendChild(fb);
 
@@ -657,6 +645,9 @@
       row.appendChild(banner);
     }
   }
+
+  // Init auth UI
+  updateAuthUI();
 </script>
 </body>
 </html>
